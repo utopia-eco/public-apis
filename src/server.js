@@ -5,6 +5,7 @@ const Web3 = require("web3")
 const web3 = new Web3("https://bsc-dataseed.binance.org/");
 const app = express()
 const cors = require ('cors')
+const BigNumber = require('bignumber.js');
 const port = process.env.PORT
 
 app.use(cors());
@@ -93,7 +94,7 @@ app.route('/circulatingSupply')
       console.error("Unable to retrieve token amount", err)
     }
 
-    const circulatingSupply = totalSupply - deadAddressBalance - lockedWalletBalance - burnAddressBalance - swapAddressBalance;
+    const circulatingSupply = new BigNumber(totalSupply).minus(new BigNumber(deadAddressBalance)).minus(new BigNumber(lockedWalletBalance)).minus(new BigNumber(swapAddressBalance));
     return res.json(circulatingSupply.toString());
   });
 
