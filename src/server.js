@@ -18,7 +18,7 @@ const UtopiaToken = new web3.eth.Contract(
 );
 
 app.get('/', (req, res) => {
-  res.send('This service updates the price history of tokens')
+  res.send('This service provides public apis related to the Utopia token')
 })
 
 // Returns tpta; supply
@@ -94,7 +94,7 @@ app.route('/circulatingSupply')
     }
 
     const circulatingSupply = totalSupply - deadAddressBalance - lockedWalletBalance - burnAddressBalance - swapAddressBalance;
-    return res.json(circulatingSupply);
+    return res.json(circulatingSupply.toString());
   });
 
 app.get('/health', (req, res) => res.send("Healthy"));
