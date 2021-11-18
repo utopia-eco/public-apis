@@ -38,7 +38,7 @@ app.route('/totalSupply')
     } catch (err) {
       console.error("Unable to retrieve total supply", err)
     }
-    return res.json(totalSupply);
+    return res.json(totalSupply / 10 ** 9);
   });
 
 // Returns circulating supply
@@ -55,47 +55,47 @@ app.route('/circulatingSupply')
           console.error("Unable to call total supply function properly", err);
           return;
         }
-        console.log("total supply is ", result);
-        totalSupply = result;
+        totalSupply = result / (10 ** 9);
+        console.log("total supply is ", totalSupply);
       });
       await UtopiaToken.methods.balanceOf("0x000000000000000000000000000000000000dead").call(function (err, result) {
         if (err) {
           console.error("Unable to call balanceOf function properly", err);
           return;
         }
-        console.log("Balance of dead address is ", result);
-        deadAddressBalance = result;
+        deadAddressBalance = result / 10 ** 9;
+        console.log("Balance of dead address is ", deadAddressBalance);
       });
       await UtopiaToken.methods.balanceOf("0x81e0ef68e103ee65002d3cf766240ed1c070334d").call(function (err, result) {
         if (err) {
           console.error("Unable to call balanceOf function properly", err);
           return;
         }
-        console.log("Balance of locked wallet is ", result);
-        lockedWalletBalance = result;
+        lockedWalletBalance = result / 10 ** 9;
+        console.log("Balance of locked wallet is ", lockedWalletBalance);
       });
       await UtopiaToken.methods.balanceOf("0x0000000000000000000000000000000000000001").call(function (err, result) {
         if (err) {
           console.error("Unable to call balanceOf function properly", err);
           return;
         }
-        console.log("Balance of burn address is ", result);
-        burnAddressBalance = result;
+        burnAddressBalance = result / 10 ** 9;
+        console.log("Balance of burn address is ", burnAddressBalance);
       });
       await UtopiaToken.methods.balanceOf("0x45cbef2c8e7b9b36b2e302dce5d4a93f479a278b").call(function (err, result) {
         if (err) {
           console.error("Unable to call balanceOf function properly", err);
           return;
         }
-        console.log("Balance of swap address is ", result);
-        swapAddressBalance = result;
+        swapAddressBalance = result / 10 ** 9;
+        console.log("Balance of swap address is ", swapAddressBalance);
       });
     } catch (err) {
       console.error("Unable to retrieve token amount", err)
     }
 
-    const circulatingSupply = new BigNumber(totalSupply).minus(new BigNumber(deadAddressBalance)).minus(new BigNumber(lockedWalletBalance)).minus(new BigNumber(swapAddressBalance));
-    return res.json(circulatingSupply.toString());
+    const circulatingSupply = totalSupply - deadAddressBalance - lockedWalletBalance - burnAddressBalance - swapAddressBalance
+    return res.json(circulatingSupply);
   });
 
 app.get('/health', (req, res) => res.send("Healthy"));
